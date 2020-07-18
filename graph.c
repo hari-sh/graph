@@ -3,7 +3,7 @@
 struct Graph 
 { 
 	int V; 
-	gen_list** array; 
+	list** array; 
 }; 
 
 struct Graph* createGraph(int V) 
@@ -11,19 +11,19 @@ struct Graph* createGraph(int V)
 	struct Graph* graph = (struct Graph*) malloc(sizeof(struct Graph)); 
 	graph->V = V; 
 
-    graph->array = (gen_list**)malloc(V * sizeof(gen_list)); 
+    graph->array = (list**)malloc(V * sizeof(list)); 
   
 	int i; 
 	for (i = 0; i < V; i++) 
-		graph->array[i] = gen_list_create(sizeof(int)); 
+		graph->array[i] = list_create(sizeof(int)); 
 
 	return graph; 
 } 
 
 void addEdge(struct Graph* graph, int src, int dest) 
 { 
-    gen_list_push((graph->array[src]), &dest);
-    gen_list_push((graph->array[dest]), &src);
+    list_push((graph->array[src]), &dest);
+    list_push((graph->array[dest]), &src);
 } 
 
 void print_vertex(void* vert)    {
@@ -35,7 +35,7 @@ void printGraph(struct Graph* graph)
 	for (v = 0; v < graph->V; ++v) 
 	{ 
         printf("vertex %d........",v);
-		gen_list_print((graph->array[v]), print_vertex);
+		list_print((graph->array[v]), print_vertex);
 	} 
 } 
 

@@ -4,48 +4,48 @@
 #include <stdbool.h>
 #include <stdarg.h>
 
-typedef struct gen_list_node gen_list_node;
-typedef struct gen_list gen_list;
-typedef struct gen_listf gen_listf;
+typedef struct list_node list_node;
+typedef struct list list;
+typedef struct listf listf;
 
-gen_listf* import_gen_listf();
-gen_list* gen_list_create(int size);
-gen_list_node* gen_list_new_node(void* data, int size);
-typedef void (*gen_list_print_data)(void* data);
+listf* import_listf();
+list* list_create(int size);
+list_node* list_new_node(void* data, int size);
+typedef void (*list_print_data)(void* data);
 
-void gen_list_print(gen_list*, gen_list_print_data);
-void gen_list_push(gen_list*, void* data);
-void gen_list_add(gen_list*, void* data);
-void* gen_list_pop(gen_list* tail);
-void* gen_list_remove(gen_list*);
-void gen_list_reverse(gen_list*);
-void gen_list_insert(gen_list*, int, void* data);
-void* gen_list_delete(gen_list* ,int);
-void* gen_list_data(gen_list* list,int index);
-void gen_list_clear(gen_list* list);
-void gen_list_merge_sort(gen_list* list, int (*gen_list_comparator)(void* data1, void* data2));
-void gen_list_swap(gen_list_node** n1, gen_list_node** n2);
-void* gen_list_first(gen_list* list, int (*gen_list_comparator)(void* data));
-gen_list* gen_list_select(gen_list* list, int (*gen_list_comparator)(void* data));
-int (*gen_list_comparator)(void* data, ...);
-gen_list* gen_list_copy(gen_list* l);
-void gen_list_concat(gen_list* list1, gen_list* list2);
-gen_list* gen_list_merge(gen_list* list1, gen_list* list2);
+void list_print(list*, list_print_data);
+void list_push(list*, void* data);
+void list_add(list*, void* data);
+void* list_pop(list* tail);
+void* list_remove(list*);
+void list_reverse(list*);
+void list_insert(list*, int, void* data);
+void* list_delete(list* ,int);
+void* list_data(list* list,int index);
+void list_clear(list* list);
+void list_merge_sort(list* list, int (*list_comparator)(void* data1, void* data2));
+void list_swap(list_node** n1, list_node** n2);
+void* list_first(list* list, int (*list_comparator)(void* data));
+list* list_select(list* list, int (*list_comparator)(void* data));
+int (*list_comparator)(void* data, ...);
+list* list_copy(list* l);
+void list_concat(list* list1, list* list2);
+list* list_merge(list* list1, list* list2);
 
-struct gen_list_node   {
+struct list_node   {
     void* data;
-    gen_list_node *next;
+    list_node *next;
 };
 
-struct gen_list {
-    gen_list_node* head;
-    gen_list_node* tail;
+struct list {
+    list_node* head;
+    list_node* tail;
     int size;
     int count;
 };
 
-gen_list_node* gen_list_new_node(void* data, int size)    {
-    gen_list_node *temp = malloc(sizeof(gen_list_node));
+list_node* list_new_node(void* data, int size)    {
+    list_node *temp = malloc(sizeof(list_node));
     void* value = malloc(size);
     memcpy (value, data, size);
     temp->data = value;
@@ -53,8 +53,8 @@ gen_list_node* gen_list_new_node(void* data, int size)    {
     return temp;
 }
 
-gen_list* gen_list_create(int size) {
-    gen_list* l = malloc(sizeof(gen_list));
+list* list_create(int size) {
+    list* l = malloc(sizeof(list));
     l->head = NULL;
     l->tail = NULL;
     l->count = 0;
@@ -62,19 +62,19 @@ gen_list* gen_list_create(int size) {
     return l;
 }
 
-void gen_list_print(gen_list* l, void (*gen_list_print_data)(void*))  {
-    gen_list_node *p = l->head;
+void list_print(list* l, void (*list_print_data)(void*))  {
+    list_node *p = l->head;
     while (p != NULL)   {
-        gen_list_print_data(p->data);
+        list_print_data(p->data);
         p = p->next;
     }
     printf("\n");
 }
 
-void gen_list_reverse(gen_list* l)    {
-    gen_list_node *currn = (l->head);
-    gen_list_node *prevn = NULL;
-    gen_list_node *nextn = NULL;
+void list_reverse(list* l)    {
+    list_node *currn = (l->head);
+    list_node *prevn = NULL;
+    list_node *nextn = NULL;
     while (currn != NULL)   {
         nextn = currn->next;
         currn->next = prevn;
@@ -84,8 +84,8 @@ void gen_list_reverse(gen_list* l)    {
     (l->head) = prevn;
 }
 
-void gen_list_push(gen_list* l, void* data)  {
-    gen_list_node *new_node = gen_list_new_node(data, l->size);
+void list_push(list* l, void* data)  {
+    list_node *new_node = list_new_node(data, l->size);
     if ((l->head) == NULL)  {
         (l->head) = new_node;
         (l->tail) = (l->head);
@@ -97,7 +97,7 @@ void gen_list_push(gen_list* l, void* data)  {
     (l->count)++;
 }
 
-void* gen_list_pop(gen_list* l)  {
+void* list_pop(list* l)  {
     void* res = NULL;
     if (l->head != NULL)    {
         if (l->head->next == NULL)    {
@@ -107,7 +107,7 @@ void* gen_list_pop(gen_list* l)  {
         }
         else    {
             res = (l->tail)->data;
-            gen_list_node *p = (l->head);
+            list_node *p = (l->head);
             while (p->next->next != NULL)
                 p = p->next;
             free(p->next);
@@ -119,8 +119,8 @@ void* gen_list_pop(gen_list* l)  {
     return res;
 }
 
-void gen_list_add(gen_list* l, void* data)   {
-    gen_list_node *new_node = gen_list_new_node(data, l->size);
+void list_add(list* l, void* data)   {
+    list_node *new_node = list_new_node(data, l->size);
     if ((l->head) == NULL)  {
         (l->head) = new_node;
         (l->tail) = (l->head);
@@ -132,7 +132,7 @@ void gen_list_add(gen_list* l, void* data)   {
     (l->count)++;
 }
 
-void* gen_list_remove(gen_list* l)  {
+void* list_remove(list* l)  {
     void* res = NULL;
     if ((l->head) != NULL)  {
         if (l->head == l->tail) {
@@ -149,15 +149,15 @@ void* gen_list_remove(gen_list* l)  {
     return res;
 }
 
-void gen_list_insert(gen_list* l, int pos, void* n)    {
+void list_insert(list* l, int pos, void* n)    {
     if(pos <= l->count)  {
         if(pos==0)
-            gen_list_add(l,n);
+            list_add(l,n);
         else if(pos==(l->count))
-            gen_list_push(l,n);
+            list_push(l,n);
         else  {
-            gen_list_node *temp = l->head;
-            gen_list_node *new_node = gen_list_new_node(n, l->size);
+            list_node *temp = l->head;
+            list_node *new_node = list_new_node(n, l->size);
             for(int i=0; i<(pos-1); i++)
                 temp = temp->next;
             new_node->next = temp->next;
@@ -167,13 +167,13 @@ void gen_list_insert(gen_list* l, int pos, void* n)    {
     }
 }
 
-void* gen_list_delete(gen_list* l, int pos)   {
+void* list_delete(list* l, int pos)   {
     void* res = NULL;
     if((pos < l->count) && (l->head != NULL))   {
         if (pos == 0)
-            res = gen_list_remove(l);
+            res = list_remove(l);
         else    {
-            gen_list_node *temp = l->head;
+            list_node *temp = l->head;
             for(int i=0; i<(pos-1); i++)
                 temp = temp->next;
             res = temp->next->data;
@@ -184,10 +184,10 @@ void* gen_list_delete(gen_list* l, int pos)   {
     return res;
 }
 
-void gen_list_clear(gen_list* l) 
+void list_clear(list* l) 
 { 
-   gen_list_node* current = l->head; 
-   gen_list_node* next; 
+   list_node* current = l->head; 
+   list_node* next; 
   
    while (current != NULL)  
    { 
@@ -198,9 +198,9 @@ void gen_list_clear(gen_list* l)
     l->head = NULL; 
 }
 
-void* gen_list_data(gen_list* l,int n)    {
+void* list_data(list* l,int n)    {
     if(n < l->count) {
-        gen_list_node *p = l->head;
+        list_node *p = l->head;
         for (int i=0; i<n; i++) {
             p = p->next;
         }
@@ -209,16 +209,16 @@ void* gen_list_data(gen_list* l,int n)    {
     return NULL;
 }
 
-void gen_list_merge_sort(gen_list* l, int (*gen_list_comparator)(void*, void*)) 
+void list_merge_sort(list* l, int (*list_comparator)(void*, void*)) 
 { 
-    gen_list_node** head = &(l->head);
+    list_node** head = &(l->head);
 	int len = l->count;
 
 	if (*head == NULL) 
 		return; 
-	gen_list_node* start1 = NULL, *end1 = NULL; 
-	gen_list_node* start2 = NULL, *end2 = NULL; 
-	gen_list_node* prevend = NULL; 
+	list_node* start1 = NULL, *end1 = NULL; 
+	list_node* start2 = NULL, *end2 = NULL; 
+	list_node* prevend = NULL; 
 
 	for (int gap = 1; gap < len; gap = gap*2) { 
 		start1 = *head; 
@@ -240,19 +240,19 @@ void gen_list_merge_sort(gen_list* l, int (*gen_list_comparator)(void*, void*))
 			while (--counter && end2->next) 
 				end2 = end2->next; 
 
-			gen_list_node* temp = end2->next; 
+			list_node* temp = end2->next; 
 
-            gen_list_node* temp1 = NULL; 
-            if (gen_list_comparator(start1->data,start2->data)) { 
-                gen_list_swap(&start1, &start2); 
-                gen_list_swap(&end1, &end2); 
+            list_node* temp1 = NULL; 
+            if (list_comparator(start1->data,start2->data)) { 
+                list_swap(&start1, &start2); 
+                list_swap(&end1, &end2); 
             } 
 
-            gen_list_node* astart = start1, *aend = end1; 
-            gen_list_node* bstart = start2, *bend = end2; 
-            gen_list_node* bendnext = (end2)->next; 
+            list_node* astart = start1, *aend = end1; 
+            list_node* bstart = start2, *bend = end2; 
+            list_node* bendnext = (end2)->next; 
             while (astart != aend && bstart != bendnext) { 
-                if (gen_list_comparator(astart->next->data, bstart->data)) { 
+                if (list_comparator(astart->next->data, bstart->data)) { 
                     temp1 = bstart->next;
                     bstart->next = astart->next; 
                     astart->next = bstart; 
@@ -275,23 +275,23 @@ void gen_list_merge_sort(gen_list* l, int (*gen_list_comparator)(void*, void*))
         } 
         prevend->next = start1; 
 	}
-    gen_list_node* p = *head;
+    list_node* p = *head;
     while(p->next != NULL)  {
         p = p -> next;
     }
     l->tail = p;
 }
 
-void gen_list_swap(gen_list_node** n1, gen_list_node** n2) {
-    gen_list_node* temp = *n1;
+void list_swap(list_node** n1, list_node** n2) {
+    list_node* temp = *n1;
     *n1 = *n2;
     *n2 = temp; 
 }
 
-void* gen_list_first(gen_list* l, int (*gen_list_comparator)(void*)) {
-    gen_list_node* p = l->head;
+void* list_first(list* l, int (*list_comparator)(void*)) {
+    list_node* p = l->head;
     void * data = NULL;
-    while(!(gen_list_comparator)(p->data) && p != NULL)    {
+    while(!(list_comparator)(p->data) && p != NULL)    {
         p = p->next;
     }
     if(p != NULL)   {
@@ -300,52 +300,52 @@ void* gen_list_first(gen_list* l, int (*gen_list_comparator)(void*)) {
     return data;
 }
 
-gen_list* gen_list_select(gen_list* l, int (*gen_list_comparator)(void*)) {
-    gen_list* res = gen_list_create(l->size);
-    gen_list_node* p = l->head;
+list* list_select(list* l, int (*list_comparator)(void*)) {
+    list* res = list_create(l->size);
+    list_node* p = l->head;
     while(p != NULL)    {
-        if(gen_list_comparator(p->data))    {
-            gen_list_push(res,p->data);
+        if(list_comparator(p->data))    {
+            list_push(res,p->data);
         }
         p = p->next;
     }
     return res;
 }
 
-gen_list* gen_list_copy(gen_list* l) {
-    gen_list* res = gen_list_create(l->size);
-    gen_list_node* p = l->head;
+list* list_copy(list* l) {
+    list* res = list_create(l->size);
+    list_node* p = l->head;
     while(p != NULL)    {
-        gen_list_push(res,p->data);
+        list_push(res,p->data);
         p = p->next;
     }
     return res;
 }
 
-gen_list* gen_list_merge(gen_list* list1, gen_list* list2) {
-    gen_list* res = gen_list_create(list1->size);
-    gen_list_node* p = list1->head;
+list* list_merge(list* list1, list* list2) {
+    list* res = list_create(list1->size);
+    list_node* p = list1->head;
     while(p != NULL)    {
-        gen_list_push(res,p->data);
+        list_push(res,p->data);
         p = p->next;
     }
     p = list2->head;
     while(p != NULL)    {
-        gen_list_push(res,p->data);
+        list_push(res,p->data);
         p = p->next;
     }
     return res;
 }
 
-void gen_list_concat(gen_list* list1, gen_list* list2) {
+void list_concat(list* list1, list* list2) {
     list1->tail->next = list2->head;
     list1->tail = list2->tail; 
 }
 
 /*
-void* gen_list_to_array(gen_list* l)   {
+void* list_to_array(list* l)   {
     char* res = malloc(sizeof((l->count)*(l->size)));
-    gen_list_node* p = l->head;
+    list_node* p = l->head;
     for(int i=0; i<l->count; i++)   {
         char* des = res + i*(l->size);
         char* src = (char*)p->data;
